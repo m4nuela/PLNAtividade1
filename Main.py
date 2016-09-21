@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 import string
 import re
 
+categories = ['earn','acq','money-fx', 'grain','crude', 'trade', 'interest','ship','wheat', 'corn']
 
 porterStemmer = PorterStemmer()
 stopSet = set(stopwords.words('english'))
@@ -21,12 +22,17 @@ def checkNotANumber(word):
             return True
     return False
 
+def findCategory(clist):
+    c = [0]*len(categories)
+    for i in range(0, len(c)):
+        if categories[i] in clist:
+            c[i] += 1
+    return c
 
 def preprocessFile(file):
-
-
     tokens = nltk.word_tokenize(' '.join(reuters.words(file)))
-    document = Document(file,reuters.categories(file))
+    category = findCategory(reuters.categories(file))
+    document = Document(file, category)
     content = []
     for token in tokens:
         if token not in stopAndPuctuationSet and checkNotANumber(token):
@@ -40,7 +46,7 @@ def preprocessFile(file):
 #print(reuters.categories())
 
 
-files = reuters.fileids(['earn','acq','money-fx', 'grain','crude', 'trade', 'interest','ship','wheat', 'corn'])
+files = reuters.fileids(categories)
 
 
 #ACQ 2369 != 1829
